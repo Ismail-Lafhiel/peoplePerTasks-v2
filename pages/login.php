@@ -32,21 +32,26 @@ if (isset($_POST['login'])) {
                 $_SESSION['email'] = $row['email'];
                 $_SESSION['first_name'] = $row['first_name'];
                 $_SESSION['last_name'] = $row['last_name'];
-                $_SESSION['username'] = $_SESSION['first_name']." ".$_SESSION['last_name'];
-                header("Location: index.php");
+                $_SESSION['user_type'] = $row['user_type'];
+                $_SESSION['username'] = $_SESSION['first_name'] . " " . $_SESSION['last_name'];
+
+                $successMessage = "<div class='p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-green-800 dark:text-green-400 text-center' role='alert'>
+                        <span class='font-medium'>success alert!</span> You logged in
+                    </div>";
+                // header("Location: index.php");
             } else {
-                $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center' role='alert'>
+                $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-green-800 dark:text-red-400 text-center' role='alert'>
                         <span class='font-medium'>Danger alert!</span> Invalid password
                     </div>";
             }
         } else {
-            $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center' role='alert'>
+            $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-red-800 dark:text-red-400 text-center' role='alert'>
                         <span class='font-medium'>Danger alert!</span> Invalid email
                     </div>";
         }
 
     } else {
-        $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center' role='alert'>
+        $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-red-800 dark:text-red-400 text-center' role='alert'>
                     <span class='font-medium'>" . count($form_errors) . " errors in this form</span>
                 </div>";
     }
@@ -71,6 +76,9 @@ include_once('components/head.php');
             <div
                 class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
                 <?php
+                if (isset($successMessage)) {
+                    echo $successMessage;
+                }
                 if (isset($errorMessage)) {
                     echo $errorMessage;
                 }
@@ -107,13 +115,14 @@ include_once('components/head.php');
                                     <label for="remember" class="text-gray-500 dark:text-gray-300">Remember me</label>
                                 </div>
                             </div>
-                            <a href="#"
+                            <a href="reset_password.php"
                                 class="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">Forgot
                                 password?</a>
                         </div>
                         <button type="submit" name="login"
-                            class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Sign
-                            in</button>
+                            class="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            Signin
+                        </button>
                         <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                             Don't have an account yet? <a href="signup.php"
                                 class="font-medium text-blue-600 hover:underline dark:text-blue-500">Sign up</a>
@@ -125,6 +134,7 @@ include_once('components/head.php');
     </section>
     <?php include_once('components/footer.php') ?>
     <?php include_once('components/darkmood.php') ?>
+    <script src="../js/redirect.js"></script>
 </body>
 
 </html>

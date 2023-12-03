@@ -1,4 +1,4 @@
-<?php 
+<?php
 include_once("../resources/db.php");
 include_once('../utilities/formValidation.php');
 // sign up
@@ -13,7 +13,6 @@ if (isset($_POST['submit'])) {
     $field_to_check_length = array('first_name' => 4, 'last_name' => 4, 'password' => 8, 'confirm_password' => 8);
     // call min_length function
     $form_errors = array_merge($form_errors, min_length($field_to_check_length));
-
     // email validation / merge the return data into form_errors array
     $form_errors = array_merge($form_errors, check_email($_POST));
 
@@ -29,32 +28,33 @@ if (isset($_POST['submit'])) {
         $password = $_POST['password'];
         $confirm_password = $_POST['confirm_password'];
         $city_id = $_POST['ville_id'];
+        $user_type = $_POST['user_type'];
         $accept_condition = $_POST['accept_condition'];
 
         if ($password == $confirm_password) {
 
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $sql = "INSERT INTO users (first_name, last_name, email, password, ville_id) 
-            VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO users (first_name, last_name, email, password, ville_id, user_type) 
+            VALUES (?, ?, ?, ?, ?, ?)";
 
             $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "ssssi", $first_name, $last_name, $email, $hashed_password, $city_id);
+            mysqli_stmt_bind_param($stmt, "ssssis", $first_name, $last_name, $email, $hashed_password, $city_id, $user_type);
             $result = mysqli_stmt_execute($stmt);
             if ($result) {
                 // User inserted successfully
-                $successMessage = "<div class='p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 text-center' role='alert'>
+                $successMessage = "<div class='p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-100 dark:bg-green-800 dark:text-green-400 text-center' role='alert'>
                                 <span class='font-medium'>Success alert!</span> Registered Successfully.
                             </div>";
                 // header("Location: index.php");
             } else {
                 // Error occurred
-                $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center' role='alert'>
+                $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-red-800 dark:text-red-400 text-center' role='alert'>
                         <span class='font-medium'>Danger alert!</span> " . mysqli_stmt_error($stmt) . "
                     </div>";
             }
         }
     } else {
-        $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center' role='alert'>
+        $errorMessage = "<div class='p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-100 dark:bg-red-800 dark:text-red-400 text-center' role='alert'>
                     <span class='font-medium'>" . count($form_errors) . " errors in this form</span>
                 </div>";
     }
@@ -66,7 +66,7 @@ $result = mysqli_query($conn, $sql);
 $villes = array();
 while ($row = mysqli_fetch_assoc($result)) {
     $villes[$row['id']] = $row;
-} 
+}
 ?>
 
 <!DOCTYPE html>
@@ -192,6 +192,26 @@ include_once('components/head.php');
                                         echo "<option value='" . $id . "'>" . $ville['ville'] . "</option>";
                                     } ?>
                                 </select>
+                            </div>
+                            <div class="py-2">
+                                <div class="flex items-center mb-4">
+                                    <input id="country-option-1" type="radio" name="user_type" value="client"
+                                        class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600"
+                                        checked>
+                                    <label for="country-option-1"
+                                        class="block ms-2  text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        I'm a client, hiring for a project
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center mb-4">
+                                    <input id="country-option-2" type="radio" name="user_type" value="freelancer"
+                                        class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="country-option-2"
+                                        class="block ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                                        I'm a freelancer, looking for work
+                                    </label>
+                                </div>
                             </div>
                             <div class="flex items-start">
                                 <div class="flex items-center h-5">
