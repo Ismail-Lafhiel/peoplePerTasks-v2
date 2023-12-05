@@ -21,7 +21,7 @@ $no_hover = "class='block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:h
                     id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
                     data-dropdown-placement="bottom">
                     <span class="sr-only">Open user menu</span>
-                    <img class="w-10 h-10 rounded-full" src="../../img/avatar.jpg" alt="user photo">
+                    <img class="w-10 h-10 rounded-full" src="../../images/avatar.jpg" alt="user photo">
                 </button>
                 <!-- Dropdown menu -->
                 <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
@@ -35,11 +35,13 @@ $no_hover = "class='block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:h
                         </span>
                     </div>
                     <ul class="py-2" aria-labelledby="user-menu-button">
+                        <? if($_SESSION['user_type'] == "client"): ?>
                         <li>
                             <a href="../pages/dashboard.php"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard
                             </a>
                         </li>
+                        <? endif; ?>
                         <li>
                             <a href="#"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>

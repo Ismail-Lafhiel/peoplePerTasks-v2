@@ -1,9 +1,7 @@
 <?php
+include_once("../resources/session.php");
 $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group'";
 ?>
-
-
-
 <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
     <div class="px-3 py-3 lg:px-5 lg:pl-3">
         <div class="flex items-center justify-between">
@@ -21,7 +19,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
                     </svg>
                 </button>
 
-                <a href="../../src/index.php" class="flex ml-2 md:mr-24  items-center">
+                <a href="../pages/index.php" class="flex ml-2 md:mr-24  items-center">
                     <img src="../../images/logo.webp" class="h-8 mr-6" alt="peoplepertask Logo">
                     <span class="font-inter font-semibold dark:text-white">PeaplePerTask</span>
                 </a>
@@ -29,50 +27,41 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
 
             <div class="flex items-center">
                 <div class="flex relative items-center ml-3">
-                    <div>
-                        <button type="button"
-                            class="flex text-sm bg-gray-800 rounded-full focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-                            aria-expanded="false" id="dropdown-user-button" data-dropdown-toggle="dropdown-user">
-                            <span class="sr-only">Open user menu</span>
-                            <img class="w-8 h-8 rounded-full" src="../../images/avatar.jpg" alt="user photo">
-
-                        </button>
+                    <button type="button"
+                        class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600 w-10"
+                        id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
+                        data-dropdown-placement="bottom">
+                        <span class="sr-only">Open user menu</span>
+                        <img class="w-10 h-10 rounded-full" src="../../img/avatar.jpg" alt="user photo">
+                    </button>
+                    <!-- Dropdown menu -->
+                    <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                        id="user-dropdown">
+                        <div class="px-4 py-3">
+                            <span class="block text-sm text-gray-900 dark:text-white">
+                                <?php echo $_SESSION['username']; ?>
+                            </span>
+                            <span class="block text-sm  text-gray-500 truncate dark:text-gray-400">
+                                <?php echo $_SESSION['email']; ?>
+                            </span>
+                        </div>
+                        <ul class="py-2" aria-labelledby="user-menu-button">
+                            <li>
+                                <a href="../pages/dashboard.php"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+                            </li>
+                            <li>
+                                <a href="../pages/logout.php"
+                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign
+                                    out</a>
+                            </li>
+                        </ul>
                     </div>
-
-                    <!-- <div class="z-50 hidden absolute top-11 right-3 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded shadow dark:bg-gray-700 dark:divide-gray-600"
-                            id="dropdown-user">
-                            <div class="px-4 py-3" role="menu">
-                                <p class="text-sm text-gray-900 dark:text-white" role="none">
-                                    Soulaiman Bouhlal
-                                </p>
-                                <p class="text-sm font-medium text-gray-900 truncate dark:text-gray-300" role="none">
-                                    S.bouhlal@peoplepertask.com
-                                </p>
-                            </div>
-                            <ul class="py-1" role="menu">
-                                <li>
-                                    <a href="/"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Dashboard</a>
-                                </li>
-                                <li>
-                                    <a href="/"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Settings</a>
-                                </li>
-                                <li>
-                                    <a href="/"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Earnings</a>
-                                </li>
-                                <li>
-                                    <a href="/"
-                                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-600 dark:hover:text-white"
-                                        role="menuitem">Sign out</a>
-                                </li>
-                            </ul>
-                        </div> -->
-
                     <button aria-label="theme toggle" id="theme-toggle" type="button"
                         class="text-gray-500 dark:text-gray-400 ml-5 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5">
                         <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
@@ -97,8 +86,9 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
     aria-label="Sidebar">
     <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
         <ul class="space-y-2 font-medium">
+            <?php if($_SESSION["user_type"] == "admin"){ ?>
             <li>
-                <a href="./dashboard.php" <?php if (isset($dashboard_hover))
+                <a href="../pages/dashboard.php" <?php if (isset($dashboard_hover))
                     echo $dashboard_hover;
                 else {
                     echo $no_hover;
@@ -114,7 +104,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
                 </a>
             </li>
             <li>
-                <a href="./users.php" <?php if (isset($users_hover))
+                <a href="../pages/users.php" <?php if (isset($users_hover))
                     echo $users_hover;
                 else {
                     echo $no_hover;
@@ -131,7 +121,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
             </li>
 
             <li>
-                <a href="./freelancers.php" <?php if (isset($freelancers_hover))
+                <a href="../pages/freelancers.php" <?php if (isset($freelancers_hover))
                     echo $freelancers_hover;
                 else {
                     echo $no_hover;
@@ -149,7 +139,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
             </li>
 
             <li>
-                <a href="./projects.php" <?php if (isset($projects_hover))
+                <a href="../pages/projects.php" <?php if (isset($projects_hover))
                     echo $projects_hover;
                 else {
                     echo $no_hover;
@@ -168,7 +158,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
             </li>
 
             <li>
-                <a href="./categories.php" <?php if (isset($categories_hover))
+                <a href="../pages/categories.php" <?php if (isset($categories_hover))
                     echo $categories_hover;
                 else {
                     echo $no_hover;
@@ -187,7 +177,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
                 </a>
             </li>
             <li>
-                <a href="./categories.php" <?php if (isset($testemonials_hover))
+                <a href="../pages/testemonials.php" <?php if (isset($testemonials_hover))
                     echo $testemonials_hover;
                 else {
                     echo $no_hover;
@@ -205,19 +195,92 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
                     <span class="flex-1 ml-3 whitespace-nowrap font-inter">Testemonials</span>
                 </a>
             </li>
-
-
             <li>
-                <a href="../../src/signin.php"
+                <a href="../pages/logout.php"
                     class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                     <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
                         aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
                     </svg>
-                    <span class="flex-1 ml-3 whitespace-nowrap font-inter">Sign In</span>
+                    <span class="flex-1 ml-3 whitespace-nowrap font-inter">Sign Out</span>
                 </a>
             </li>
+            <?php }else if($_SESSION["user_type"] == "freelancer"){ ?>
+                <li>
+                <a href="../pages/dashboard.php" <?php if (isset($dashboard_hover))
+                    echo $dashboard_hover;
+                else {
+                    echo $no_hover;
+                }
+                ?>>
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M2 6.27737C2 6.0311 2.12534 5.80007 2.33638 5.65735L7.53638 2.14078C7.81395 1.95307 8.18605 1.95307 8.46362 2.14078L13.6636 5.65735C13.8747 5.80007 14 6.0311 14 6.27737V12.8588C14 13.4891 13.4627 14 12.8 14H3.2C2.53726 14 2 13.4891 2 12.8588V6.27737Z"
+                            stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <span class="ml-3 font-inter">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="../pages/logout.php"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
+                    </svg>
+                    <span class="flex-1 ml-3 whitespace-nowrap font-inter">Sign Out</span>
+                </a>
+            </li>
+            <?php }else{ ?>
+                <li>
+                <a href="../pages/dashboard.php" <?php if (isset($dashboard_hover))
+                    echo $dashboard_hover;
+                else {
+                    echo $no_hover;
+                }
+                ?>>
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M2 6.27737C2 6.0311 2.12534 5.80007 2.33638 5.65735L7.53638 2.14078C7.81395 1.95307 8.18605 1.95307 8.46362 2.14078L13.6636 5.65735C13.8747 5.80007 14 6.0311 14 6.27737V12.8588C14 13.4891 13.4627 14 12.8 14H3.2C2.53726 14 2 13.4891 2 12.8588V6.27737Z"
+                            stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <span class="ml-3 font-inter">Dashboard</span>
+                </a>
+            </li>
+            <li>
+                <a href="../pages/projects.php" <?php if (isset($projects_hover))
+                    echo $projects_hover;
+                else {
+                    echo $no_hover;
+                }
+                ?>>
+
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 dark:text-gray-400 transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                        width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M2 9.5H5L6 10.55H10L11 9.5H14M3.5 14C2.67157 14 2 13.3284 2 12.5V3.5C2 2.67157 2.67157 2 3.5 2H12.5C13.3284 2 14 2.67157 14 3.5V12.5C14 13.3284 13.3284 14 12.5 14H3.5Z"
+                            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+
+                    <span class="flex-1 ml-3 whitespace-nowrap font-inter">Projects</span>
+                </a>
+            </li>
+            <li>
+                <a href="../pages/logout.php"
+                    class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                    <svg class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3" />
+                    </svg>
+                    <span class="flex-1 ml-3 whitespace-nowrap font-inter">Sign Out</span>
+                </a>
+            </li>
+            <?php } ?>
 
         </ul>
     </div>
