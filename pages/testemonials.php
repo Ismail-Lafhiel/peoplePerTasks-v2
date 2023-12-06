@@ -1,21 +1,22 @@
 <?php
 include_once("../resources/session.php");
+require_once("./users.php");
 if ($_SESSION["user_type"] == "admin") {
     require_once(__DIR__ . "/../resources/db.php");
-    // ------------------ add testemonials -----------------------    //
+    // Add testimonial
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $comment = $_POST["comment"];
+        $comment = htmlspecialchars($_POST["comment"]); // Protect against XSS
         $user_id = $_POST["user_id"];
-        $query = "INSERT INTO `testemonials` (comment, user_id) VALUES (?, ?)";
 
+        $query = "INSERT INTO `testimonials` (comment, user_id) VALUES (?, ?)";
         if ($stmt = mysqli_prepare($conn, $query)) {
             mysqli_stmt_bind_param($stmt, "si", $comment, $user_id);
 
             if (mysqli_stmt_execute($stmt)) {
-                echo "New testemonial created successfully";
+                echo "New testimonial created successfully";
                 exit;
             } else {
-                echo "Error: Unable to execute the query";
+                echo "Error: " . mysqli_error($conn); // Display error message
             }
 
             mysqli_stmt_close($stmt);
@@ -23,37 +24,42 @@ if ($_SESSION["user_type"] == "admin") {
             echo "Error: Unable to prepare the statement";
         }
     }
-    // ------------------ delete testemonials -----------------------    //
-    if (isset($_GET["delete_testemonial"])) {
-        $testemonial_id = $_GET["delete_testemonial"];
-        $query = "DELETE FROM `testemonials` WHERE id = ?";
+
+    // Delete testimonial
+    if (isset($_GET["delete_testimonial"])) {
+        $testimonial_id = $_GET["delete_testimonial"];
+        $query = "DELETE FROM `testimonials` WHERE id = ?";
         $stmt = mysqli_prepare($conn, $query);
-        mysqli_stmt_bind_param($stmt, "i", $testemonial_id);
+        mysqli_stmt_bind_param($stmt, "i", $testimonial_id);
         mysqli_stmt_execute($stmt);
         mysqli_stmt_close($stmt);
     }
-    // ------------------ shows testemonials -----------------------    //
-    $query = "SELECT testemonials.id, testemonials.comment, testemonials.created_at, testemonials.updated_at, users.first_name, users.last_name, users.img_path
-          FROM testemonials 
-          INNER JOIN users ON testemonials.user_id = users.id ORDER BY testemonials.id DESC";
+
+    // Show testimonials
+    $query = "SELECT testemonials.id, testemonials.comment, ... ... testemonials.created_at, testemonials.updated_at, users.first_name, users.last_name, users.img_path
+      FROM testemonials 
+      INNER JOIN users ON testemonials.user_id = users.id ORDER BY testemonials.id DESC";
 
     $result = mysqli_query($conn, $query);
 
-    $testemonials = array();
+    $testimonials = array();
     while ($row = mysqli_fetch_assoc($result)) {
-        $testemonials[$row['id']] = $row;
+        // Sanitize user input to prevent XSS
+        $sanitizedRow = array_map('htmlspecialchars', $row);
+        $testimonials[$sanitizedRow['id']] = $sanitizedRow;
     }
+
     ?>
     <!DOCTYPE html>
     <html lang="en">
     <?php $title = "Testemonials";
-    include("adminHead.php") ?>
+    include("components/adminHead.php"); ?>
 
     <body class="dark:bg-gray-900">
 
         <?php
         $testemonials_hover = "class='flex items-center p-2 text-white rounded-lg bg-orange-600 dark:text-white hover:text-gray-900 hover:bg-gray-100 dark:hover:bg-gray-700 group'";
-        include("adminSideBar.php");
+        include("components/adminSideBar.php");
         ?>
 
         <main class=" mt-14 p-12 ml-0  smXl:ml-64  ">
@@ -285,16 +291,13 @@ if ($_SESSION["user_type"] == "admin") {
                 showDeleteModal(); // Show the modal
             });
             // editLink.addEventListener('click', function (event) {
-                // event.preventDefault(); // Prevent the default behavior of the link
-                // showEditModal(); // Show the modal
+            // event.preventDefault(); // Prevent the default behavior of the link
+            // showEditModal(); // Show the modal
             // });
         </script>
     </body>
 
     </html>
-<?php } ?>
-
-<?php
-// require_once("../db/Testemonials_CRUD/showTestemonials.php");
-// require_once("../db/User_CRUD/showUsers.php");
-?>
+<?php } else{
+    header("Location: dashboard.php");
+} ?>

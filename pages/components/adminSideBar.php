@@ -32,7 +32,7 @@ $no_hover = "class='flex items-center p-2 text-gray-900 rounded-lg dark:text-whi
                         id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
                         data-dropdown-placement="bottom">
                         <span class="sr-only">Open user menu</span>
-                        <img class="w-10 h-10 rounded-full" src="../../img/avatar.jpg" alt="user photo">
+                        <img class="w-10 h-10 rounded-full" src="../../images/avatar.jpg" alt="user photo">
                     </button>
                     <!-- Dropdown menu -->
                     <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
