@@ -1,41 +1,13 @@
 <?php
 include_once("../resources/session.php");
+require_once("./controllers/categoryController.php");
 
 if ($_SESSION["user_type"] == "admin") {
-    require_once(__DIR__ . "/../resources/db.php");
-
-    // Add category
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $category_name = htmlspecialchars($_POST["name"]); // Protect against XSS
-
-        $query = "INSERT INTO `categories` (category_name) VALUES (?)";
-        if ($stmt = mysqli_prepare($conn, $query)) {
-            mysqli_stmt_bind_param($stmt, "s", $category_name);
-
-            if (mysqli_stmt_execute($stmt)) {
-                echo "New category created successfully";
-                header("location: categories.php");
-                exit;
-            } else {
-                echo "Error: " . mysqli_error($conn); // Display error message
-            }
-
-            mysqli_stmt_close($stmt);
-        } else {
-            echo "Error: Unable to prepare the statement";
-        }
-    }
+    // Call the addCategory function
+    addCategory($conn, $_POST["name"]);
 
     // Show categories
-    $query = "SELECT * FROM `categories`";
-    $result = mysqli_query($conn, $query);
-
-    $categories = array();
-    while ($row = mysqli_fetch_assoc($result)) {
-        // Sanitize user input to prevent XSS
-        $sanitizedRow = array_map('htmlspecialchars', $row);
-        $categories[$sanitizedRow['id']] = $sanitizedRow;
-    }
+    $categories= getCategories($conn);
     ?>
 
     <html lang="en">
@@ -154,7 +126,7 @@ if ($_SESSION["user_type"] == "admin") {
                                     </div>
                                 </th>
                                 <td class="px-6 py-4">
-                                    <?php echo $category['name'] ?>
+                                    <?php echo $category['category_name'] ?>
                                 </td>
                                 <td class="px-6 py-4">
                                     <?php echo $category['created_at'] ?>
@@ -169,12 +141,13 @@ if ($_SESSION["user_type"] == "admin") {
             </div>
 
         </main>
+        <script src="../js/dashboard.js"></script>
         <script src="../js/mood.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.0.0/flowbite.min.js"></script>
     </body>
 
     </html>
-<?php }else{
+<?php } else {
     header("Location: dashboard.php");
 } ?>
 <!DOCTYPE html>

@@ -2,7 +2,13 @@
 include_once("../resources/session.php");
 require_once("./controllers/projectController.php");
 if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
-    update_project($conn);
+    if (isset($_GET['edit_id'])) {
+        $projectData = array();
+        $edit_id = $_GET['edit_id'];
+        get_project_for_edit($conn, $edit_id);
+        $projectData = array_merge($projectData, getUserForEdit($conn, $edit_id));
+    }
+    update_project($conn, $_POST['project_id'], $_POST['project_title'], $_POST['project_description'], $_FILES['project_img'], $_POST['category_id'], $_POST['user_id']);
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -87,6 +93,15 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                 <textarea id="project_description" name="project_description" rows="4"
                                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500"
                                     placeholder="Write Project Description here"><? echo $projectData['description'] ?></textarea>
+                            </div>
+                            <div class="col-span-2">
+                                <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    for="project_img">Upload file</label>
+                                <input
+                                    class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                    aria-describedby="project_img_help" id="project_img" name="project_img" type="file">
+                                <div class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="project_img_help">A
+                                    project picture is useful to specify the project type</div>
                             </div>
                         </div>
                         <button type="submit"

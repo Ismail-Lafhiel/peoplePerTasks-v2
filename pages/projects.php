@@ -1,14 +1,21 @@
 <?php
 include_once("../resources/session.php");
 require_once("./controllers/projectController.php");
-// require_once("./controllers/categoryController.php");
-// require_once("./controllers/categoryController.php");
+require_once("./controllers/categoryController.php");
+require_once("./controllers/userController.php");
 //------------------------------- add project ---------------------------- //
 if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
-    add_project($conn);
-    delete_project($conn);
-    $projectData = get_project_for_edit($conn);
+    if (isset($_POST['project_title']) && isset($_POST['category_id']) && isset($_POST['user_id']) && isset($_POST['project_description']) && isset($_FILES['project_img'])) {
+        add_project($conn, $_POST['project_title'], $_POST['project_description'], $_FILES['project_img'], $_POST['category_id'], $_POST['user_id']);
+    }
+    if (isset($_GET['delete_id'])) {
+        $delete_id = $_GET['delete_id'];
+        delete_project($conn, $delete_id);
+
+    }
     $projects = show_projects($conn);
+    $users = getUsers($conn);
+    $categories= getCategories($conn);
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -83,7 +90,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                             <option value="#"> --select an option-- </option>
                                             <?php
                                             foreach ($categories as $id => $category) {
-                                                echo "<option value='" . $id . "'>" . $category['name'] . "</option>";
+                                                echo "<option value='" . $id . "'>" . $category['category_name'] . "</option>";
                                             }
                                             ?>
                                         </Select>
@@ -98,7 +105,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                             <option value="#"> --select an option-- </option>
                                             <?php
                                             foreach ($users as $id => $user) {
-                                                echo "<option value='" . $id . "'>" . $user['first_name'] . " " . $user['last_name'] . "</option>";
+                                                echo "<option value='" . $id . "'>" . $user['first_name']. " ". $user['last_name'] . "</option>";
                                             }
                                             ?>
                                         </Select>
@@ -111,6 +118,16 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                         <textarea id="project_description" name="project_description" rows="4"
                                             class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500"
                                             placeholder="Write Project Description here"></textarea>
+                                    </div>
+                                    <div class="col-span-2">
+                                        <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                            for="project_img">Upload file</label>
+                                        <input
+                                            class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                                            aria-describedby="project_img_help" id="project_img" name="project_img"
+                                            type="file">
+                                        <div class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="project_img_help">A
+                                            project picture is useful to specify the project type</div>
                                     </div>
                                 </div>
                                 <button type="submit"
@@ -136,7 +153,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                 <th scope="col" class="px-6 py-3">
                                     id
                                 </th>
-                                <th scope="col" class="px-6 py-3">
+                                <th colspan="2" class="px-6 py-3">
                                     Project name
                                 </th>
                                 <th scope="col" class="px-6 py-3">
@@ -172,6 +189,15 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                         <?php echo $project["id"] ?>
                                     </th>
                                     <td class="px-6 py-4 max-w-xs max-h-1 overflow-hidden">
+
+                                        <?php if (isset($project['img_path'])) {
+                                            echo "<img class='w-10 h-10 rounded-full' src=" . $project['img_path'] . " alt = 'project image'  >";
+                                        } else {
+                                            echo "<img class='w-10 h-10 rounded-full' src='../images/project-image.jpg' alt='project-image'>";
+                                        }
+                                        ?>
+                                    </td>
+                                    <td class="px-6 py-4">
                                         <?php echo $project["title"] ?>
                                     </td>
                                     <td class="px-6 py-4">
@@ -187,16 +213,16 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                         <?php echo $project['updated_at'] ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                    <a href="editProject.php?edit_id=<?php echo $project['id'] ?>"
-                                        class="mb-7 mr-5 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                                        Edit
-                                    </a>
-                                    <a href="projects.php?project_id=<?php echo $project['id'] ?>"
-                                        onclick="return confirm('Are you sure you want to delete this project?')"
-                                        class="mb-7 text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
-                                        Delete
-                                    </a>
-                                </td>
+                                        <a href="editProject.php?edit_id=<?php echo $project['id'] ?>"
+                                            class="mb-7 mr-5 text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+                                            Edit
+                                        </a>
+                                        <a href="projects.php?delete_id=<?php echo $project['id'] ?>"
+                                            onclick="return confirm('Are you sure you want to delete this project?')"
+                                            class="mb-7 text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800">
+                                            Delete
+                                        </a>
+                                    </td>
                                 </tr>
                             <?php endforeach ?>
                         </tbody>
@@ -207,7 +233,8 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
             </div>
 
         </main>
-        <script src="../js/mood.js"></script>
+        <script src="../../js/dashboard.js"></script>
+        <?php include_once('components/darkmood.php') ?>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.0.0/flowbite.min.js"></script>
     </body>
 

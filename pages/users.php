@@ -6,16 +6,13 @@ if ($_SESSION["user_type"] == "admin") {
         createUser($conn, $_POST['first_name'], $_POST['last_name'], $_POST['email'], $_POST['password'], $_POST['user_type'], $_FILES['user_avatar'], $_POST['ville_id']);
     }
     $users = array();
-    getUsers($conn);
-    $villes = array();
-    getVilles($conn);
-    $villes = array_merge($villes, getVilles($conn));
-    $users = array_merge($users, getUsers($conn));
-    
+    $villes = getVilles($conn);
+    $users = getUsers($conn);
+
     if (isset($_GET['delete_id'])) {
         $delete_id = $_GET['delete_id'];
         deleteUser($conn, $delete_id);
-        
+
     }
     mysqli_close($conn);
     ?>
@@ -150,7 +147,7 @@ if ($_SESSION["user_type"] == "admin") {
                 </div>
                 <?php
                 //  var_dump($users);
-                 ?>
+                ?>
                 <table class="w-full shadow-md text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
