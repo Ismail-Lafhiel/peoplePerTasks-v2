@@ -134,7 +134,6 @@ include_once('components/head.php');
     </section>
     <?php include_once('components/footer.php') ?>
     <?php include_once('components/darkmood.php') ?>
-    <script src="../js/redirect.js"></script>
 </body>
 
 </html>

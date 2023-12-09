@@ -1,7 +1,7 @@
 <?php
 include_once("../resources/session.php");
 require_once("./controllers/freelancerController.php");
-require_once("./controllers/userController.php");
+// require_once("./controllers/userController.php");
 if ($_SESSION["user_type"] == "admin") {
     $users = getUsers($conn);
     // Show freelancers

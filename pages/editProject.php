@@ -53,7 +53,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                     title</label>
                                 <input type="text" name="project_title" id="project_title"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-600 focus:border-orange-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500"
-                                    placeholder="Prject title" required="" value="<? echo $projectData['title'] ?>">
+                                    placeholder="Prject title" required="" value="<?php echo $projectData['title'] ?>">
                             </div>
                             <div>
                                 <label for="categories"
@@ -92,7 +92,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                     Description</label>
                                 <textarea id="project_description" name="project_description" rows="4"
                                     class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-orange-500 focus:border-orange-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500"
-                                    placeholder="Write Project Description here"><? echo $projectData['description'] ?></textarea>
+                                    placeholder="Write Project Description here"><?php echo $projectData['description'] ?></textarea>
                             </div>
                             <div class="col-span-2">
                                 <label class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
