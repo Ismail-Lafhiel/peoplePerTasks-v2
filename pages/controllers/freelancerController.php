@@ -68,28 +68,31 @@ function updateFreelancer($conn, $freelancerId, $firstName, $lastName, $skills)
 
 function getFreelancers($conn)
 {
-    $query1 = "INSERT INTO freelancers (user_id)
-                SELECT DISTINCT s.user_id
-                FROM skills s
-                JOIN users u ON s.user_id = u.id
-                WHERE u.user_type = 'freelancer'";
-
-    $query2 = "SELECT u.id, u.first_name, u.last_name, s.skill, f.created_at, f.updated_at
-                FROM users u
-                JOIN skills s ON u.id = s.user_id
-                JOIN freelancers f ON f.user_id = u.id";
-
-    mysqli_query($conn, $query1);
-    $result = mysqli_query($conn, $query2);
-
     $freelancers = array();
-    while ($row = mysqli_fetch_assoc($result)) {
-        // Sanitize user input to prevent XSS
-        $sanitizedRow = array_map('htmlspecialchars', $row);
-        $freelancers[$sanitizedRow['id']] = $sanitizedRow;
+
+    // Retrieve freelancer users
+    $freelancerUsersQuery = "SELECT * FROM users WHERE user_type = 'freelancer'";
+    $freelancerUsersResult = mysqli_query($conn, $freelancerUsersQuery);
+
+    // Loop through each freelancer user
+    while ($freelancerUser = mysqli_fetch_assoc($freelancerUsersResult)) {
+        $userSkillsQuery = "SELECT s.skill FROM skills s
+                        INNER JOIN user_skill us ON s.id = us.skill_id
+                        WHERE us.user_id = " . $freelancerUser['id'];
+        $userSkillsResult = mysqli_query($conn, $userSkillsQuery);
+
+        $skills = array();
+        while ($skill = mysqli_fetch_assoc($userSkillsResult)) {
+            $skills[] = $skill['skill'];
+        }
+
+        $freelancerUser['skills'] = $skills;
+        $sanitizedFreelancerUser = $freelancerUser;
+        $freelancers[$sanitizedFreelancerUser['id']] = $sanitizedFreelancerUser;
     }
 
     return $freelancers;
+
 }
 
 function get_freelancer_for_edit($conn, $freelancer_id)

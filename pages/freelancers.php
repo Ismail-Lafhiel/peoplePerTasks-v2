@@ -77,7 +77,9 @@ if ($_SESSION["user_type"] == "admin") {
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
-                                        <?php echo $freelancer['skill'] ?>
+                                        <?php foreach ($freelancer['skills'] as $skill){
+                                            echo $skill;
+                                        } ?>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">

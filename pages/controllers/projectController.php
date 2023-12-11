@@ -35,14 +35,14 @@ function add_project($conn, $project_title, $project_description, $imgDestinatio
         $project_description = htmlspecialchars($project_description);
         $category_id = intval($category_id);
         $user_id = intval($user_id);
-        
+
 
         $query = "INSERT INTO `projects` (title, description, img_path, category_id, user_id) VALUES (?,?,?,?,?)";
         $stmt = mysqli_prepare($conn, $query);
         if ($stmt) {
             mysqli_stmt_bind_param($stmt, "sssii", $project_title, $project_description, $imgDestination, $category_id, $user_id);
             if (mysqli_stmt_execute($stmt)) {
-                header("Location: projects.php");
+                header("Location: ../pages/projects.php");
                 exit;
             } else {
                 echo "Error: " . mysqli_error($conn);
@@ -56,14 +56,36 @@ function add_project($conn, $project_title, $project_description, $imgDestinatio
 
 function show_projects($conn)
 {
-    $query = "SELECT projects.id, projects.title, projects.created_at, projects.img_path, projects.updated_at, categories.category_name, CONCAT(users.first_name, ' ', users.last_name) AS user_name
-          FROM projects 
-          INNER JOIN categories ON projects.category_id = categories.id 
-          INNER JOIN users ON projects.user_id = users.id";
+    $query = "SELECT u.first_name, u.last_name, u.user_type, c.category_name, p.id, p.created_at, p.title, p.description, t.tag_name
+    FROM users u
+    JOIN projects p ON u.id = p.user_id
+    JOIN categories c ON p.category_id = c.id
+    JOIN project_tag pt ON p.id = pt.project_id
+    JOIN tags t ON pt.tag_id = t.id WHERE u.user_type = 'client'";
 
     $result = mysqli_query($conn, $query);
 
-    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    $projects = [];
+
+    while ($row = mysqli_fetch_assoc($result)) {
+        $timestamp = strtotime($row['created_at']);
+        $now = time();
+
+        $diff = $timestamp - $now;
+        $days = floor($diff / (60 * 60 * 24));
+        $projectId = $row['id'];
+        if (!isset($projects[$projectId])) {
+            $projects[$projectId] = [
+                'title' => $row['title'],
+                'tags' => [],
+                'description' => $row['description'],
+                'days' => $days,
+                'username'=> $row['first_name']." ".$row['last_name'],
+                'user_type' => $row['user_type'],
+            ];
+        }
+         $projects[$projectId]['tags'][] = $row['tag_name'];
+    }
 
     return $projects;
 }
