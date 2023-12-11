@@ -20,13 +20,9 @@ $services_hover = "class='block py-2 px-3 text-white bg-blue-700 rounded md:bg-t
           </h1>
 
         </div>
-
         <section aria-labelledby="products-heading" class="pb-24 pt-6">
-          <!-- <h2 id="products-heading" class="sr-only">Products</h2> -->
           <form>
             <div class="flex">
-              <label for="search-dropdown" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Your
-                Email</label>
               <button id="dropdown-button" data-dropdown-toggle="dropdown"
                 class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-gray-900 bg-gray-100 border border-gray-300 rounded-s-lg hover:bg-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700 dark:text-white dark:border-gray-600"
                 type="button">All categories <svg class="w-2.5 h-2.5 ms-2.5" aria-hidden="true"
@@ -59,7 +55,7 @@ $services_hover = "class='block py-2 px-3 text-white bg-blue-700 rounded md:bg-t
                 <input type="search" id="search-bar"
                   class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-s-gray-700  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500"
                   placeholder="Search Mockups, Logos, Design Templates..." required>
-                <button type="submit"
+                <button
                   class="absolute top-0 end-0 p-2.5 text-sm font-medium h-full text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                   <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 20 20">
@@ -74,7 +70,7 @@ $services_hover = "class='block py-2 px-3 text-white bg-blue-700 rounded md:bg-t
           <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-4">
             <!-- services grid -->
             <div class="lg:col-span-3">
-              <section class="text-gray-600 body-font" id="search-result">
+              <section class="text-gray-600 body-font">
                 <div class="container px-5 py-24 mx-auto">
                   <div class="flex flex-wrap -m-4">
                     <?php foreach ($projects as $project): ?>
@@ -148,7 +144,6 @@ $services_hover = "class='block py-2 px-3 text-white bg-blue-700 rounded md:bg-t
   <?php include_once('components/darkmood.php') ?>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.0.0/flowbite.min.js"></script>
-  <script src="../js/search.js"></script>
 </body>
 
 </html>

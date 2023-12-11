@@ -4,14 +4,13 @@ require_once(__DIR__ . "/../../resources/db.php");
 if(isset($_POST["input"])){
     $input = $_POST["input"];
 
-    $query = "SELECT * from projects where title LIKE '{input}%'";
+    $query = "SELECT * from projects where title LIKE '$input%'";
 
     $result = mysqli_query($conn, $query);
-
+    $data = '';
     if(mysqli_num_rows($result) > 0){
-        $data = array();
         while($row = mysqli_fetch_assoc($result)){
-            $data[$row] = $row;
+            $data .= "";
         }
         header("Location: ../pages/projects.php");
     }else{

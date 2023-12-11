@@ -84,7 +84,7 @@ function show_projects($conn)
                 'user_type' => $row['user_type'],
             ];
         }
-         $projects[$projectId]['tags'][] = $row['tag_name'];
+        $projects[$projectId]['tags'][] = $row['tag_name'];
     }
 
     return $projects;

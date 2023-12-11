@@ -20,7 +20,6 @@ if ($_SESSION["user_type"] == "admin") {
         include("components/header.php");
         ?>
         <main class=" mt-14 p-12 ml-0  smXl:ml-64">
-            <?PHP var_dump($freelancerData) ?>
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow dark:bg-gray-900">
                 <!-- Modal header -->
