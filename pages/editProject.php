@@ -1,14 +1,20 @@
 <?php
 include_once("../resources/session.php");
+require_once("./controllers/categoryController.php");
+require_once("./controllers/userController.php");
 require_once("./controllers/projectController.php");
 if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
     if (isset($_GET['edit_id'])) {
         $projectData = array();
         $edit_id = $_GET['edit_id'];
         get_project_for_edit($conn, $edit_id);
-        $projectData = array_merge($projectData, getUserForEdit($conn, $edit_id));
+        $projectData = array_merge($projectData, get_project_for_edit($conn, $edit_id));
+        $users = getUsers($conn);
+        $categories = getCategories($conn);
     }
-    update_project($conn, $_POST['project_id'], $_POST['project_title'], $_POST['project_description'], $_FILES['project_img'], $_POST['category_id'], $_POST['user_id']);
+    if (isset($_POST['project_id'], $_POST['project_title'], $_POST['project_description'], $_FILES['project_img'], $_POST['category_id'], $_POST['user_id'])) {
+        update_project($conn, $_POST['project_id'], $_POST['project_title'], $_POST['project_description'], $_FILES['project_img'], $_POST['category_id'], $_POST['user_id']);
+    }
     ?>
     <!DOCTYPE html>
     <html lang="en">
@@ -44,7 +50,8 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                         </button>
                     </div>
                     <!-- Modal body -->
-                    <form class="p-4 md:p-5" method="POST">
+                    <?php var_dump($projectData) ?>
+                    <form class="p-4 md:p-5" method="POST" enctype="multipart/form-data">
                         <div class="grid gap-4 mb-4">
                             <input type="hidden" name="project_id" id="project_id">
                             <div>
@@ -65,7 +72,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                     <option value="#" disabled> --select an option-- </option>
                                     <?php
                                     foreach ($categories as $id => $category) {
-                                        echo "<option value='" . $id . "'>" . $category['name'] . "</option>";
+                                        echo "<option value='" . $id . "'>" . $category['category_name'] . "</option>";
                                     }
                                     ?>
                                 </Select>

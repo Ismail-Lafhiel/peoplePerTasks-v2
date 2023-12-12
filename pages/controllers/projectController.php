@@ -13,17 +13,14 @@ function add_project($conn, $project_title, $project_description, $imgDestinatio
         $allowed = array("jpg", "jpeg", "png");
 
         if (in_array($imgActualExt, $allowed)) {
-            if ($imgSize < 125000) {
-                $imgNewName = uniqid("", true) . "." . $imgActualExt;
-                $imgDestination = '../images/projects_images/' . $imgNewName;
-                if (move_uploaded_file($imgTmpName, $imgDestination)) {
-                    // Image uploaded successfully
-                } else {
-                    $err = "Error uploading the image";
-                }
+            $imgNewName = uniqid("", true) . "." . $imgActualExt;
+            $imgDestination = '../../images/uploads/' . $imgNewName;
+            if (move_uploaded_file($imgTmpName, $imgDestination)) {
+                // Image uploaded successfully
             } else {
-                $err = "Image size is too large";
+                $err = "Error uploading the image";
             }
+
         } else {
             $err = "Invalid file type. Allowed types: jpg, jpeg, png";
         }
@@ -56,12 +53,13 @@ function add_project($conn, $project_title, $project_description, $imgDestinatio
 
 function show_projects($conn)
 {
-    $query = "SELECT u.first_name, u.last_name, u.user_type, c.category_name, p.id, p.created_at, p.title, p.description, t.tag_name
-    FROM users u
-    JOIN projects p ON u.id = p.user_id
+    $query = "SELECT u.first_name, u.last_name, u.user_type, c.category_name, p.id, p.created_at, p.updated_at, p.title, p.description, t.tag_name
+    FROM projects p
+    JOIN users u ON u.id = p.user_id
     JOIN categories c ON p.category_id = c.id
-    JOIN project_tag pt ON p.id = pt.project_id
-    JOIN tags t ON pt.tag_id = t.id WHERE u.user_type = 'client'";
+    LEFT JOIN project_tag pt ON p.id = pt.project_id
+    LEFT JOIN tags t ON pt.tag_id = t.id;
+    ";
 
     $result = mysqli_query($conn, $query);
 
@@ -76,12 +74,16 @@ function show_projects($conn)
         $projectId = $row['id'];
         if (!isset($projects[$projectId])) {
             $projects[$projectId] = [
+                'id' => $projectId,
                 'title' => $row['title'],
-                'tags' => [],
                 'description' => $row['description'],
+                'created_at' => $row['created_at'],
+                'updated_at' => $row['updated_at'],
                 'days' => $days,
-                'username'=> $row['first_name']." ".$row['last_name'],
+                'username' => $row['first_name'] . " " . $row['last_name'],
                 'user_type' => $row['user_type'],
+                'category_name' => $row['category_name'],
+                'tags' => [],
             ];
         }
         $projects[$projectId]['tags'][] = $row['tag_name'];
@@ -108,6 +110,11 @@ function get_project_for_edit($conn, $project_id)
 
 function update_project($conn, $project_id, $project_title, $project_description, $imgDestination, $category_id, $user_id)
 {
+    $project_id = intval($project_id);
+    $project_title = htmlspecialchars($project_title);
+    $project_description = htmlspecialchars($project_description);
+    $category_id = intval($category_id);
+    $user_id = intval($user_id);
     $imgNewName = null;
     if (isset($_FILES["project_img"]) && $_FILES["project_img"]["error"] === 0) {
         $imgName = $_FILES["project_img"]["name"];
@@ -118,46 +125,49 @@ function update_project($conn, $project_id, $project_title, $project_description
         $allowed = array("jpg", "jpeg", "png");
 
         if (in_array($imgActualExt, $allowed)) {
-            if ($imgSize < 125000) {
-                $imgNewName = uniqid("", true) . "." . $imgActualExt;
-                $imgDestination = '../images/projects_images/' . $imgNewName;
-                if (move_uploaded_file($imgTmpName, $imgDestination)) {
-                    // Image uploaded successfully
-                } else {
-                    $err = "Error uploading the image";
-                }
+            $imgNewName = uniqid("", true) . "." . $imgActualExt;
+            $imgDestination = '../../images/uploads/' . $imgNewName;
+            if (move_uploaded_file($imgTmpName, $imgDestination)) {
+                // Image uploaded successfully
             } else {
-                $err = "Image size is too large";
+                $err = "Error uploading the image";
             }
+
         } else {
             $err = "Invalid file type. Allowed types: jpg, jpeg, png";
         }
     } else {
         $err = "Error uploading the image";
     }
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $project_id = intval($project_id);
-        $project_title = htmlspecialchars($project_title);
-        $project_description = htmlspecialchars($project_description);
-        $category_id = intval($category_id);
-        $user_id = intval($user_id);
-
-        $query = "UPDATE `projects` SET title=?, description=?, img_path = ?, user_id=?, category_id=? WHERE id=?";
+    if ($imgDestination) {
+        $query = "UPDATE `projects` SET title=?, description=?, img_path=?, user_id=?, category_id=? WHERE id=?";
         $stmt = mysqli_prepare($conn, $query);
         if ($stmt) {
-            mysqli_stmt_bind_param($stmt, "sssiii", $project_title, $project_description, $imgDestination, $category_id, $user_id, $project_id);
-            if (mysqli_stmt_execute($stmt)) {
-                header("Location: ../pages/projects.php");
-                exit;
-            } else {
-                echo "Error: " . mysqli_error($conn);
-            }
-            mysqli_stmt_close($stmt);
+            mysqli_stmt_bind_param($stmt, "sssiii", $project_title, $project_description, $imgDestination, $user_id, $category_id, $project_id);
         } else {
             echo "Error: Unable to prepare the statement";
+            return;
+        }
+    } else {
+        $query = "UPDATE `projects` SET title=?, description=?, user_id=?, category_id=? WHERE id=?";
+        $stmt = mysqli_prepare($conn, $query);
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "ssiii", $project_title, $project_description, $user_id, $category_id, $project_id);
+        } else {
+            echo "Error: Unable to prepare the statement";
+            return;
         }
     }
+
+    if (mysqli_stmt_execute($stmt)) {
+        header("Location: ../pages/projects.php");
+        exit;
+    } else {
+        echo "Error: " . mysqli_error($conn);
+    }
+    mysqli_stmt_close($stmt);
 }
+
 
 function delete_project($conn, $project_id)
 {

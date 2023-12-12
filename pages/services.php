@@ -78,7 +78,7 @@ $services_hover = "class='block py-2 px-3 text-white bg-blue-700 rounded md:bg-t
                         class="lg:w-1/4 md:w-1/2 p-4 w-full ring-1 rounded-lg ring-gray-300 dark:ring-gray-700 bg-white dark:bg-gray-900">
                         <h3
                           class="text-gray-900 font-bold text-lg p-2 lg:p-4 lg:text-xl tracking-widest title-font mb-1 dark:text-white">
-                          <a href="projects.php">
+                          <a href="project.php">
                             <?php echo $project['title'] ?>
                           </a>
                         </h3>

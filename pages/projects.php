@@ -70,7 +70,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                 </button>
                             </div>
                             <!-- Modal body -->
-                            <form class="p-4 md:p-5" method="POST">
+                            <form class="p-4 md:p-5" method="POST" enctype="multipart/form-data" >
                                 <div class="grid gap-4 mb-4">
                                     <div>
                                         <label for="project_title"
@@ -191,7 +191,7 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                     <td class="px-6 py-4 max-w-xs max-h-1 overflow-hidden">
 
                                         <?php if (isset($project['img_path'])) {
-                                            echo "<img class='w-10 h-10 rounded-full' src=" . $project['img_path'] . " alt = 'project image'  >";
+                                            echo "<img class='w-10 h-10 rounded-full' src='../images/uploads/'". $project['img_path']." alt = 'project image'  >";
                                         } else {
                                             echo "<img class='w-10 h-10 rounded-full' src='../images/project-image.jpg' alt='project-image'>";
                                         }
@@ -201,10 +201,10 @@ if ($_SESSION["user_type"] == "admin" || $_SESSION["user_type"] == "client") {
                                         <?php echo $project["title"] ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php echo $project['name'] ?>
+                                        <?php echo $project['category_name'] ?>
                                     </td>
                                     <td class="px-6 py-4">
-                                        <?php echo $project['first_name'] . " " . $project['last_name'] ?>
+                                        <?php echo $project['username'] ?>
                                     </td>
                                     <td class="px-6 py-4">
                                         <?php echo $project['created_at'] ?>
